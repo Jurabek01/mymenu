@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://188.166.167.80:5432/postgres
+    username: postgres
+    password: re_mim_soft
+server:
+  port: 8084
