@@ -1,5 +1,6 @@
-package mimsoft.io.lemenu.dish;
+package mimsoft.io.lemenu.product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,20 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "dish")
-public class Dish {
-    private static final String SEQ_NAME = "dish_seq";
+@Table(name = "product")
+public class Product {
+    private static final String SEQ_NAME = "product_seq";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME)
     @SequenceGenerator(name = SEQ_NAME, sequenceName = SEQ_NAME, allocationSize = 1)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
     private Long menuId;
-    private String name;
+    private String nameUz;
+    private String nameRu;
+    private String nameEng;
     private String image;
     private String description;
     private BigDecimal costPrice;
-    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
-    private List<Option> options;
-
 }

@@ -1,21 +1,16 @@
 package mimsoft.io.lemenu.extra;
 
-import mimsoft.io.lemenu.dish.Dish;
-import mimsoft.io.lemenu.dish.DishDto;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface ExtraService {
-    boolean save(ExtraDto extraDto);
+    boolean save(Extra extra);
 
-    List<ExtraDto> getAll();
-
-    Extra findByName(String name);
+    List<Extra> getAll();
 
     Optional<Extra> findById(Long id);
 
-    boolean update(ExtraDto extraDto, Long id);
+    boolean update(Extra extra);
 
     boolean delete(Long id);
 }

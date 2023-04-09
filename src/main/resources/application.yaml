@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
   datasource:
     url: jdbc:postgresql://188.166.167.80:5432/postgres
@@ -9,3 +9,16 @@ spring:
     password: re_mim_soft
 server:
   port: 8084
+
+springdoc:
+  swagger-ui:
+    path: /lamenu-documentation
+    try-it-out-enabled: true
+    filter: true
+  api-docs:
+    path: /lamenu-api-docs
+
+lamenu:
+  openapi:
+    dev-url: http://localhost:8084
+    prod-url: http://188.166.167.80:8084
