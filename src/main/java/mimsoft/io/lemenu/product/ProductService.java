@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    boolean save(Product product);
+    boolean save(ProductDto productDto);
 
-    List<Product> getAll();
+    List<ProductDto> getAll();
 
-    Optional<Product> findById(Long id);
+    ProductDto findById(Long id);
 
-    boolean update(Product product);
+    boolean update(ProductDto productDto);
 
     boolean delete(Long id);
 }

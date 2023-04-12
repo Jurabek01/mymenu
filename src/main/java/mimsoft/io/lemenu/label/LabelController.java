@@ -15,26 +15,24 @@ public class LabelController {
     }
 
     @GetMapping("/labels")
-    public ResponseEntity<List<Label>> getAll() {
+    public ResponseEntity<List<LabelDto>> getAll() {
         return ResponseEntity.ok(labelService.getAll());
     }
 
     @GetMapping("/label/{id}")
-    public ResponseEntity<Label> get(@PathVariable Long id) {
-        Optional<Label> label = labelService.findById(id);
-        return label.map(ResponseEntity::ok).orElseGet(() ->
-                ResponseEntity.notFound().build());
+    public ResponseEntity<LabelDto> get(@PathVariable Long id) {
+        return ResponseEntity.ok(labelService.findById(id));
     }
 
     @PostMapping("/label")
-    public ResponseEntity<Void> add(@RequestBody Label label) {
-        labelService.save(label);
+    public ResponseEntity<Void> add(@RequestBody LabelDto labelDto) {
+        labelService.save(labelDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/label")
-    public ResponseEntity<Void> update(@RequestBody Label label) {
-        labelService.update(label);
+    public ResponseEntity<Void> update(@RequestBody LabelDto labelDto) {
+        labelService.update(labelDto);
         return ResponseEntity.ok().build();
     }
 

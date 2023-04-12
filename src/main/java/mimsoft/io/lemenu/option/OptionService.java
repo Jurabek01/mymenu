@@ -5,13 +5,13 @@ import java.util.Optional;
 
 public interface OptionService {
 
-    boolean save(Option option);
+    boolean save(OptionDto optionDto);
 
-    List<Option> getAll();
+    List<OptionDto> getAll();
 
-    Optional<Option> findById(Long id);
+    OptionDto findById(Long id);
 
-    boolean update(Option option);
+    boolean update(OptionDto optionDto);
 
     boolean delete(Long id);
 }

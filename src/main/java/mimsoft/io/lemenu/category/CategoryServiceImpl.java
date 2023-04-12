@@ -17,7 +17,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean save(CategoryDto categoryDto) {
-        categoryRepository.save(dtoTo(categoryDto));
+        categoryRepository.save(fromDto(categoryDto));
         return true;
     }
 
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean update(CategoryDto categoryDto) {
         categoryRepository.findById(categoryDto.getId()).orElseThrow(
                 () -> new RuntimeException("Category not found"));
-        categoryRepository.save(dtoTo(categoryDto));
+        categoryRepository.save(fromDto(categoryDto));
         return true;
     }
 
@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    private Category dtoTo(CategoryDto categoryDto) {
+    private Category fromDto(CategoryDto categoryDto) {
         return Category.builder()
                 .id(categoryDto.getId())
                 .nameEng(categoryDto.getName().getEng())

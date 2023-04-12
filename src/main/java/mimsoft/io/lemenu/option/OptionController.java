@@ -15,26 +15,25 @@ public class OptionController {
     }
 
     @GetMapping("/options")
-    public ResponseEntity<List<Option>> getAll() {
+    public ResponseEntity<List<OptionDto>> getAll() {
         return ResponseEntity.ok(optionService.getAll());
     }
 
     @GetMapping("/option/{id}")
-    public ResponseEntity<Option> get(@PathVariable Long id) {
-        Optional<Option> option = optionService.findById(id);
-        return option.map(ResponseEntity::ok).orElseGet(() ->
-                ResponseEntity.notFound().build());
+    public ResponseEntity<OptionDto> get(@PathVariable Long id) {
+        OptionDto option = optionService.findById(id);
+        return ResponseEntity.ok(option);
     }
 
     @PostMapping("/option")
-    public ResponseEntity<Void> add(@RequestBody Option option) {
-        optionService.save(option);
+    public ResponseEntity<Void> add(@RequestBody OptionDto optionDto) {
+        optionService.save(optionDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/option/{id}")
-    public ResponseEntity<Void> update(@RequestBody Option option) {
-        optionService.update(option);
+    public ResponseEntity<Void> update(@RequestBody OptionDto optionDto) {
+        optionService.update(optionDto);
         return ResponseEntity.ok().build();
     }
 

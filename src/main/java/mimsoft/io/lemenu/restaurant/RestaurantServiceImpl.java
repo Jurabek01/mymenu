@@ -4,6 +4,7 @@ import mimsoft.io.lemenu.content.TextModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,30 +24,38 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantDto get(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Restaurant not found"));
-        return toDto(restaurant);
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
+            return toDto(restaurant);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean save(RestaurantDto restaurantDto) {
-        restaurantRepository.save(dtoTo(restaurantDto));
+        restaurantRepository.save(fromDto(restaurantDto));
         return true;
     }
 
     @Override
     public boolean update(RestaurantDto restaurantDto) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantDto.getId())
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-        restaurantRepository.save(restaurant);
-        return true;
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantDto.getId());
+        if (restaurantOptional.isPresent()) {
+            restaurantRepository.save(fromDto(restaurantDto));
+            return true;
+        } else
+            return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Restaurant not found"));
-        restaurantRepository.delete(restaurant);
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
+            restaurantRepository.delete(restaurant);
+        }
         return true;
     }
 
@@ -65,7 +74,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .build();
     }
 
-    private Restaurant dtoTo(RestaurantDto restaurantDto) {
+    private Restaurant fromDto(RestaurantDto restaurantDto) {
         return Restaurant.builder()
                 .id(restaurantDto.getId())
                 .nameUz(restaurantDto.getName().getUz())

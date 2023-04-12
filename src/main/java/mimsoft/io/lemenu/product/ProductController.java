@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "Product", description = "Product management APIs")
 @RestController
@@ -31,12 +30,12 @@ public class ProductController {
     @Operation(summary = "Get all products")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json") }),
+                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "204", description = "There are no products", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+                    @Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAll() {
+    public ResponseEntity<List<ProductDto>> getAll() {
         return ResponseEntity.ok(productService.getAll());
     }
 
@@ -44,24 +43,26 @@ public class ProductController {
             summary = "Get a product by Id",
             description = "Get a product object by specifying its id. The response is product object with id, title, description and published status.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = Product.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @GetMapping("/product/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
-        Optional<Product> product = productService.findById(id);
-        return product.map(ResponseEntity::ok).orElseGet(() ->
-                ResponseEntity.notFound().build());
+    public ResponseEntity<ProductDto> get(@PathVariable Long id) {
+        ProductDto productDto = productService.findById(id);
+        if (productDto != null) {
+            return ResponseEntity.ok(productDto);
+        } else
+            return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Get all products")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PostMapping("/product")
-    public ResponseEntity<Void> add(@RequestBody Product product) {
-        productService.save(product);
+    public ResponseEntity<Void> add(@RequestBody ProductDto productDto) {
+        productService.save(productDto);
         return ResponseEntity.ok().build();
     }
 
@@ -69,23 +70,29 @@ public class ProductController {
     @Operation(summary = "Update a product by Id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
+                    @Content(schema = @Schema(implementation = Product.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})})
     @SneakyThrows
     @PutMapping("/product")
-    public ResponseEntity<Void> update(@RequestBody Product product) {
-        productService.update(product);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> update(@RequestBody ProductDto productDto) {
+        boolean status = productService.update(productDto);
+        if (status) {
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.noContent().build();
     }
 
 
     @Operation(summary = "Delete a product by Id")
-    @ApiResponses({ @ApiResponse(responseCode = "204", content = { @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+    @ApiResponses({@ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.delete(id);
-        return ResponseEntity.noContent().build();
+        boolean status = productService.delete(id);
+        if (status) {
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.noContent().build();
     }
 }

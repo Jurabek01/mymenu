@@ -4,7 +4,6 @@ import mimsoft.io.lemenu.content.TextModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +30,7 @@ public class MenuServiceIml implements MenuService {
 
     @Override
     public boolean save(MenuDto menuDto) {
-        menuRepository.save(dtoTo(menuDto));
+        menuRepository.save(fromDto(menuDto));
         return true;
     }
 
@@ -39,7 +38,7 @@ public class MenuServiceIml implements MenuService {
     public boolean update(MenuDto menuDto) {
         menuRepository.findById(menuDto.getId()).orElseThrow(
                 () -> new RuntimeException("Menu not found"));
-        menuRepository.save(dtoTo(menuDto));
+        menuRepository.save(fromDto(menuDto));
         return true;
     }
 
@@ -64,7 +63,7 @@ public class MenuServiceIml implements MenuService {
                 .build();
     }
 
-    private Menu dtoTo(MenuDto menuDto) {
+    private Menu fromDto(MenuDto menuDto) {
         return Menu.builder()
                 .id(menuDto.getId())
                 .nameUz(menuDto.getName().getUz())

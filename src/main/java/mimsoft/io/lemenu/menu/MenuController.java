@@ -31,7 +31,7 @@ public class MenuController {
         menuService.update(menuDto);
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping("/restaurant/{id}")
+    @DeleteMapping("/menu/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         menuService.delete(id);
         return ResponseEntity.ok().build();

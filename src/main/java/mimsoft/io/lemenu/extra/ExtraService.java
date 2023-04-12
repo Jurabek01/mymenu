@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ExtraService {
-    boolean save(Extra extra);
+    boolean save(ExtraDto extraDto);
 
-    List<Extra> getAll();
+    List<ExtraDto> getAll();
 
-    Optional<Extra> findById(Long id);
+    ExtraDto findById(Long id);
 
-    boolean update(Extra extra);
+    boolean update(ExtraDto extraDto);
 
     boolean delete(Long id);
 }
