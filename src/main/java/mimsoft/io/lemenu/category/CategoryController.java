@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,7 +22,10 @@ public class CategoryController {
 
     @GetMapping("/category/{id}")
     public ResponseEntity<CategoryDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.findById(id));
+        CategoryDto categoryDto = categoryService.get(id);
+        if (categoryDto == null)
+            ResponseEntity.noContent().build();
+        return ResponseEntity.ok(categoryDto);
     }
 
     @PostMapping("/category")
@@ -34,13 +36,15 @@ public class CategoryController {
 
     @PutMapping("/category")
     public ResponseEntity<Void> update(@RequestBody CategoryDto categoryDto) {
-        categoryService.update(categoryDto);
-        return ResponseEntity.ok().build();
+        if (categoryService.update(categoryDto))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/category")
+    @DeleteMapping("/category/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        categoryService.delete(id);
+        if (categoryService.delete(id))
+            return ResponseEntity.ok().build();
         return ResponseEntity.noContent().build();
     }
 }

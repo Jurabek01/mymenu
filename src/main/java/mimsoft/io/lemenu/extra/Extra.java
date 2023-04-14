@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mimsoft.io.lemenu.content.TextModel;
 import mimsoft.io.lemenu.option.Option;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +31,26 @@ public class Extra {
     private String nameRu;
     private String nameEng;
     private String price;
-    private String description;
+    private String descriptionUz;
+    private String descriptionRu;
+    private String descriptionEng;
+    @Builder.Default
+    private Boolean deleted = false;
+
+    @Column(name = "created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "updated")
+    private LocalDateTime updated;
+
+    @PrePersist // вызывается перед сохранением новой сущности в базе данных
+    public void prePersist() {
+        this.created = LocalDateTime.now();
+    }
+
+    @PreUpdate // вызывается перед обновлением существующей сущности в базе данных
+    public void preUpdate() {
+        this.updated = LocalDateTime.now();
+    }
 }
 

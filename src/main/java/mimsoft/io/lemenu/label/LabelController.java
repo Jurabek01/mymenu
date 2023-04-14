@@ -1,8 +1,9 @@
 package mimsoft.io.lemenu.label;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -21,7 +22,11 @@ public class LabelController {
 
     @GetMapping("/label/{id}")
     public ResponseEntity<LabelDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok(labelService.findById(id));
+        LabelDto labelDto = labelService.get(id);
+        if (labelDto == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(labelDto);
     }
 
     @PostMapping("/label")
@@ -32,13 +37,15 @@ public class LabelController {
 
     @PutMapping("/label")
     public ResponseEntity<Void> update(@RequestBody LabelDto labelDto) {
-        labelService.update(labelDto);
-        return ResponseEntity.ok().build();
+        if (labelService.update(labelDto))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/label/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        labelService.delete(id);
+        if (labelService.delete(id))
+            ResponseEntity.ok().build();
         return ResponseEntity.noContent().build();
     }
 }

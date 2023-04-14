@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import mimsoft.io.lemenu.option.Option;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -30,6 +31,26 @@ public class Product {
     private String nameRu;
     private String nameEng;
     private String image;
-    private String description;
+    private String descriptionUz;
+    private String descriptionRu;
+    private String descriptionEng;
     private BigDecimal costPrice;
+    @Builder.Default
+    private Boolean deleted = false;
+
+    @Column(name = "created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "updated")
+    private LocalDateTime updated;
+
+    @PrePersist // вызывается перед сохранением новой сущности в базе данных
+    public void prePersist() {
+        this.created = LocalDateTime.now();
+    }
+
+    @PreUpdate // вызывается перед обновлением существующей сущности в базе данных
+    public void preUpdate() {
+        this.updated = LocalDateTime.now();
+    }
 }

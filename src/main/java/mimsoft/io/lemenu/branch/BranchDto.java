@@ -1,4 +1,4 @@
-package mimsoft.io.lemenu.option;
+package mimsoft.io.lemenu.branch;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mimsoft.io.lemenu.content.TextModel;
 
-import java.math.BigDecimal;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class OptionDto {
+public class BranchDto {
     private Long id;
     private TextModel name;
-    private TextModel description;
-    private String image;
-    private BigDecimal price;
+    private Double longitude;
+    private Double latitude;
+    private String address;
 }

@@ -48,7 +48,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @GetMapping("/product/{id}")
     public ResponseEntity<ProductDto> get(@PathVariable Long id) {
-        ProductDto productDto = productService.findById(id);
+        ProductDto productDto = productService.get(id);
         if (productDto != null) {
             return ResponseEntity.ok(productDto);
         } else

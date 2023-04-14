@@ -17,6 +17,6 @@ public class ProductDto {
     private Long menuId;
     private TextModel name;
     private String image;
-    private String description;
+    private TextModel description;
     private BigDecimal costPrice;
 }

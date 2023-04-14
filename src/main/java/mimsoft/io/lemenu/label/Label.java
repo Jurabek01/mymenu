@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mimsoft.io.lemenu.product.Product;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -29,4 +33,22 @@ public class Label {
     private String textColor;
     private String bgColor;
     private String icon;
+    @Builder.Default
+    private Boolean deleted = false;
+
+    @Column(name = "created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "updated")
+    private LocalDateTime updated;
+
+    @PrePersist // вызывается перед сохранением новой сущности в базе данных
+    public void prePersist() {
+        this.created = LocalDateTime.now();
+    }
+
+    @PreUpdate // вызывается перед обновлением существующей сущности в базе данных
+    public void preUpdate() {
+        this.updated = LocalDateTime.now();
+    }
 }

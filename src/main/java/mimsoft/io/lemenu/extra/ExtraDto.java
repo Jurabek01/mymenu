@@ -14,5 +14,5 @@ public class ExtraDto {
     private Long id;
     private TextModel name;
     private String price;
-    private String description;
+    private TextModel description;
 }

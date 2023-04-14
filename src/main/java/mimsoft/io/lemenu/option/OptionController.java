@@ -1,8 +1,9 @@
 package mimsoft.io.lemenu.option;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -21,7 +22,10 @@ public class OptionController {
 
     @GetMapping("/option/{id}")
     public ResponseEntity<OptionDto> get(@PathVariable Long id) {
-        OptionDto option = optionService.findById(id);
+        OptionDto option = optionService.get(id);
+        if (option == null) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(option);
     }
 
@@ -33,13 +37,15 @@ public class OptionController {
 
     @PutMapping("/option/{id}")
     public ResponseEntity<Void> update(@RequestBody OptionDto optionDto) {
-        optionService.update(optionDto);
-        return ResponseEntity.ok().build();
+        if (optionService.update(optionDto))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/option/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        optionService.delete(id);
+        if (optionService.delete(id))
+            return ResponseEntity.ok().build();
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,8 @@
 package mimsoft.io.lemenu.extra;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -20,7 +22,10 @@ public class ExtraController {
 
     @GetMapping("/extra/{id}")
     public ResponseEntity<ExtraDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok(extraService.findById(id));
+        ExtraDto extraDto = extraService.get(id);
+        if (extraDto == null)
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(extraDto);
     }
 
     @PostMapping("/extra")
@@ -31,13 +36,15 @@ public class ExtraController {
 
     @PutMapping("/extra")
     public ResponseEntity<Void> update(@RequestBody ExtraDto extraDto) {
-        extraService.update(extraDto);
-        return ResponseEntity.ok().build();
+        if (extraService.update(extraDto))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/extra")
+    @DeleteMapping("/extra/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        extraService.delete(id);
+        if (extraService.delete(id))
+            return ResponseEntity.ok().build();
         return ResponseEntity.noContent().build();
     }
 }

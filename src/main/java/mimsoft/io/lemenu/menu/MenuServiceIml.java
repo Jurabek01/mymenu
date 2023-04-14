@@ -4,6 +4,7 @@ import mimsoft.io.lemenu.content.TextModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,15 +17,16 @@ public class MenuServiceIml implements MenuService {
 
     @Override
     public List<MenuDto> getAll() {
-        return menuRepository.findAll().stream()
+        return menuRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public MenuDto getById(Long id) {
-        Menu menu = menuRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Menu is not present"));
+    public MenuDto get(Long id) {
+        Menu menu = menuRepository.findByIdAndByDeletedFalse(id);
+        if (menu==null)
+            return null;
         return toDto(menu);
     }
 
@@ -36,17 +38,21 @@ public class MenuServiceIml implements MenuService {
 
     @Override
     public boolean update(MenuDto menuDto) {
-        menuRepository.findById(menuDto.getId()).orElseThrow(
-                () -> new RuntimeException("Menu not found"));
-        menuRepository.save(fromDto(menuDto));
-        return true;
+        if (menuRepository.findByIdAndByDeletedFalse(menuDto.getId())!=null) {
+            menuRepository.save(fromDto(menuDto));
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Menu menu = menuRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Menu not found"));
-        menuRepository.delete(menu);
+        Menu menu = menuRepository.findByIdAndByDeletedFalse(id);
+        if (menu!=null){
+            menu.setDeleted(true);
+            menuRepository.save(menu);
+            return true;
+        }
         return false;
     }
 

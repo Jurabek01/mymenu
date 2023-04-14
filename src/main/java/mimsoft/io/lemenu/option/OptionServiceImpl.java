@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class OptionServiceImpl implements OptionService{
+public class OptionServiceImpl implements OptionService {
 
     private final OptionRepository optionRepository;
 
@@ -28,32 +28,36 @@ public class OptionServiceImpl implements OptionService{
 
     @Override
     public List<OptionDto> getAll() {
-        return optionRepository.findAll().stream()
+        return optionRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public OptionDto findById(Long id) {
-        Option option = optionRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Option not found"));
+    public OptionDto get(Long id) {
+        Option option = optionRepository.findByIdAndByDeletedFalse(id);
+        if (option==null)
+            return null;
         return toDto(option);
     }
 
     @Override
     public boolean update(OptionDto optionDto) {
-        optionRepository.findById(optionDto.getId())
-                .orElseThrow(() -> new RuntimeException("Option not found"));
-        optionRepository.save(fromDto(optionDto));
-        return true;
+        if (optionRepository.findByIdAndByDeletedFalse(optionDto.getId())!=null) {
+            optionRepository.save(fromDto(optionDto));
+            return true;
+        } else return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Option option = optionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Option not found"));
-        optionRepository.delete(option);
-        return false;
+        Option option = optionRepository.findByIdAndByDeletedFalse(id);
+        if (option!=null) {
+            option.setDeleted(true);
+            optionRepository.delete(option);
+            return true;
+        } else
+            return false;
     }
 
     private Option fromDto(OptionDto optionDto) {
@@ -64,7 +68,9 @@ public class OptionServiceImpl implements OptionService{
                 .nameEng(optionDto.getName().getEng())
                 .image(optionDto.getImage())
                 .price(optionDto.getPrice())
-                .description(optionDto.getDescription())
+                .descriptionUz(optionDto.getDescription().getUz())
+                .descriptionRu(optionDto.getDescription().getRu())
+                .descriptionEng(optionDto.getDescription().getEng())
                 .build();
     }
 
@@ -80,7 +86,13 @@ public class OptionServiceImpl implements OptionService{
                 )
                 .image(option.getImage())
                 .price(option.getPrice())
-                .description(option.getDescription())
+                .description(
+                        new TextModel(
+                                option.getDescriptionUz(),
+                                option.getDescriptionRu(),
+                                option.getDescriptionEng()
+                        )
+                )
                 .build();
     }
 

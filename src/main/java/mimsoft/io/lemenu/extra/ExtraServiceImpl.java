@@ -1,8 +1,6 @@
 package mimsoft.io.lemenu.extra;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import lombok.SneakyThrows;
 import mimsoft.io.lemenu.content.TextModel;
 import mimsoft.io.lemenu.product.ProductController;
 import org.slf4j.Logger;
@@ -10,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,33 +29,38 @@ public class ExtraServiceImpl implements ExtraService {
 
     @Override
     public List<ExtraDto> getAll() {
-        return extraRepository.findAll().stream()
+        return extraRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ExtraDto findById(Long id) {
-        Extra extra = extraRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Label not found"));
+    public ExtraDto get(Long id) {
+        Extra extra = extraRepository.findByIdAndByDeletedFalse(id);
+        if (extra==null)
+            return null;
         return toDto(extra);
     }
 
     @Override
     @Transactional
     public boolean update(ExtraDto extraDto) {
-        extraRepository.findById(extraDto.getId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        extraRepository.save(fromDto(extraDto));
-        return true;
+        if (extraRepository.findByIdAndByDeletedFalse(extraDto.getId())!=null) {
+            extraRepository.save(fromDto(extraDto));
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Extra extra = extraRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        extraRepository.delete(extra);
-        return true;
+        Extra extra = extraRepository.findByIdAndByDeletedFalse(id);
+        if (extra!=null) {
+            extra.setDeleted(true);
+            extraRepository.save(extra);
+            return true;
+        }
+        return false;
     }
 
     private Extra fromDto(ExtraDto extraDto) {
@@ -68,7 +70,9 @@ public class ExtraServiceImpl implements ExtraService {
                 .nameRu(extraDto.getName().getRu())
                 .nameEng(extraDto.getName().getEng())
                 .price(extraDto.getPrice())
-                .description(extraDto.getDescription())
+                .descriptionUz(extraDto.getDescription().getUz())
+                .descriptionRu(extraDto.getDescription().getRu())
+                .descriptionEng(extraDto.getDescription().getEng())
                 .build();
     }
 
@@ -83,7 +87,13 @@ public class ExtraServiceImpl implements ExtraService {
                         )
                 )
                 .price(extra.getPrice())
-                .description(extra.getDescription())
+                .description(
+                        new TextModel(
+                                extra.getDescriptionUz(),
+                                extra.getDescriptionRu(),
+                                extra.getDescriptionEng()
+                        )
+                )
                 .build();
     }
 

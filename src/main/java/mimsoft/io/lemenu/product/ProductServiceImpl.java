@@ -31,29 +31,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAll() {
-        return productRepository.findAll().stream()
+        return productRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public ProductDto findById(Long id) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            return toDto(product);
+    public ProductDto get(Long id) {
+        Product product = productRepository.findByIdAndByDeletedFalse(id);
+        if (product==null) {
+            return null;
         }
         else
-            return null;
+            return toDto(product);
     }
 
     @SneakyThrows
     @Override
     @Transactional
     public boolean update(ProductDto productDto) {
-        Optional<Product> productOptional = productRepository.findById(productDto.getId());
-        if (productOptional.isPresent()) {
+        Product productOptional = productRepository.findByIdAndByDeletedFalse(productDto.getId());
+        if (productOptional!=null) {
             productRepository.save(fromDto(productDto));
             return true;
         }
@@ -63,12 +62,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean delete(Long id) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            productRepository.delete(product);
+        Product product = productRepository.findByIdAndByDeletedFalse(id);
+        if (product!=null) {
+            product.setDeleted(true);
+            productRepository.save(product);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private ProductDto toDto(Product product) {
@@ -84,7 +84,13 @@ public class ProductServiceImpl implements ProductService {
                 )
                 .image(product.getImage())
                 .costPrice(product.getCostPrice())
-                .description(product.getDescription())
+                .description(
+                        new TextModel(
+                                product.getNameUz(),
+                                product.getNameRu(),
+                                product.getNameEng()
+                        )
+                )
                 .build();
     }
 
@@ -97,7 +103,9 @@ public class ProductServiceImpl implements ProductService {
                 .nameEng(productDto.getName().getEng())
                 .image(productDto.getImage())
                 .costPrice(productDto.getCostPrice())
-                .description(productDto.getDescription())
+                .descriptionUz(productDto.getDescription().getUz())
+                .descriptionRu(productDto.getDescription().getRu())
+                .descriptionEng(productDto.getDescription().getEng())
                 .build();
     }
 }

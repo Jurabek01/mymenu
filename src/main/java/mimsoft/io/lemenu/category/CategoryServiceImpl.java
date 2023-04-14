@@ -4,6 +4,7 @@ import mimsoft.io.lemenu.content.TextModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,32 +24,37 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getAll() {
-        return categoryRepository.findAll().stream()
+        return categoryRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CategoryDto findById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Category is not present"));
+    public CategoryDto get(Long id) {
+        Category category = categoryRepository.findByIdAndByDeletedFalse(id);
+        if (category == null)
+            return null;
         return toDto(category);
     }
 
     @Override
     public boolean update(CategoryDto categoryDto) {
-        categoryRepository.findById(categoryDto.getId()).orElseThrow(
-                () -> new RuntimeException("Category not found"));
-        categoryRepository.save(fromDto(categoryDto));
-        return true;
+        if (categoryRepository.findByIdAndByDeletedFalse(categoryDto.getId())!=null) {
+            categoryRepository.save(fromDto(categoryDto));
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Category not found"));
-        categoryRepository.delete(category);
-        return true;
+        Category category = categoryRepository.findByIdAndByDeletedFalse(id);
+        if (category!=null){
+            category.setDeleted(true);
+            categoryRepository.save(category);
+            return true;
+        }
+        return false;
     }
 
     private CategoryDto toDto(Category category) {

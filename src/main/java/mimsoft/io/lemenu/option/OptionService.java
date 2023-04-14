@@ -1,7 +1,6 @@
 package mimsoft.io.lemenu.option;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OptionService {
 
@@ -9,7 +8,7 @@ public interface OptionService {
 
     List<OptionDto> getAll();
 
-    OptionDto findById(Long id);
+    OptionDto get(Long id);
 
     boolean update(OptionDto optionDto);
 

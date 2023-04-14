@@ -5,6 +5,7 @@ import mimsoft.io.lemenu.content.TextModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,31 +26,36 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public List<LabelDto> getAll() {
-        return labelRepository.findAll().stream()
+        return labelRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public LabelDto findById(Long id) {
-        Label label = labelRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Label not found"));
+    public LabelDto get(Long id) {
+        Label label = labelRepository.findByIdAndByDeletedFalse(id);
+        if (label==null)
+            return null;
         return toDto(label);
     }
 
     @Override
     public boolean update(LabelDto labelDto) {
-        labelRepository.findById(labelDto.getId())
-                .orElseThrow(() -> new RuntimeException("Label not found"));
-        labelRepository.save(fromDto(labelDto));
-        return true;
+        if (labelRepository.findByIdAndByDeletedFalse(labelDto.getId())!=null) {
+            labelRepository.save(fromDto(labelDto));
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean delete(Long id) {
-        Label label = labelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Label not found"));
-        labelRepository.delete(label);
+        Label label = labelRepository.findByIdAndByDeletedFalse(id);
+        if (label!=null) {
+            label.setDeleted(true);
+            labelRepository.save(label);
+            return true;
+        }
         return false;
     }
 

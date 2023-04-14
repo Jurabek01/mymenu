@@ -17,16 +17,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<RestaurantDto> getAll() {
-        return restaurantRepository.findAll().stream()
+        return restaurantRepository.findAllByDeletedFalse().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public RestaurantDto get(Long id) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-        if (restaurantOptional.isPresent()) {
-            Restaurant restaurant = restaurantOptional.get();
+        Restaurant restaurant = restaurantRepository.findByIdAndByDeletedFalse(id);
+        if (restaurant!=null) {
             return toDto(restaurant);
         } else {
             return null;
@@ -41,8 +40,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public boolean update(RestaurantDto restaurantDto) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantDto.getId());
-        if (restaurantOptional.isPresent()) {
+        Restaurant restaurantOptional = restaurantRepository.findByIdAndByDeletedFalse(restaurantDto.getId());
+        if (restaurantOptional!=null) {
             restaurantRepository.save(fromDto(restaurantDto));
             return true;
         } else
@@ -51,10 +50,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public boolean delete(Long id) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-        if (restaurantOptional.isPresent()) {
-            Restaurant restaurant = restaurantOptional.get();
-            restaurantRepository.delete(restaurant);
+        Restaurant restaurant = restaurantRepository.findByIdAndByDeletedFalse(id);
+        if (restaurant!=null) {
+            restaurant.setDeleted(true);
+            restaurantRepository.save(restaurant);
         }
         return true;
     }
