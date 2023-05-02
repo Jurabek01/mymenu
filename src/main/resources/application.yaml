@@ -22,3 +22,9 @@ lamenu:
   openapi:
     dev-url: http://localhost:8084
     prod-url: http://188.166.167.80:8084
+
+security:
+  jwt:
+    secret: lamenu
+    access: 1
+    refresh: 30

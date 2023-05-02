@@ -1,43 +1,46 @@
 package mimsoft.io.lemenu.client;
 
-import jakarta.validation.constraints.PastOrPresent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ClientController {
 
     private final ClientService clientService;
+    private final ClientMapper clientMapper;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, ClientMapper clientMapper) {
         this.clientService = clientService;
+        this.clientMapper = clientMapper;
     }
 
     @GetMapping("/clients")
     public ResponseEntity<List<ClientDto>> getAll() {
-        return ResponseEntity.ok(clientService.getAll());
+        return ResponseEntity.ok(clientService.getAll().stream()
+                .map(clientMapper::toDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/client/{id}")
     public ResponseEntity<ClientDto> get(@PathVariable Long id) {
-        ClientDto clientDto = clientService.get(id);
-        if (clientDto == null)
+        Client client = clientService.get(id);
+        if (client == null)
             return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(clientDto);
+        return ResponseEntity.ok(clientMapper.toDto(client));
     }
 
     @PostMapping("/client")
     public ResponseEntity<Void> add(@RequestBody ClientDto clientDto) {
-        clientService.save(clientDto);
+        clientService.save(clientMapper.toEntity(clientDto));
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/client")
     public ResponseEntity<Void> update(@RequestBody ClientDto clientDto) {
-        if (clientService.update(clientDto))
+        if (clientService.update(clientMapper.toEntity(clientDto)))
             return ResponseEntity.ok().build();
         return ResponseEntity.noContent().build();
     }
