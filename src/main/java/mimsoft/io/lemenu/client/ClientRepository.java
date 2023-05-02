@@ -11,4 +11,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query(value = "SELECT * FROM client WHERE id = ?1 AND deleted = false", nativeQuery = true)
     Client findByIdAndByDeletedFalse(Long id);
+
+    Client findByPhone(String phone);
 }
