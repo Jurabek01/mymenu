@@ -13,4 +13,5 @@ public class DeviceDto {
     private Long id;
     private String firebaseToken;
     private String phone;
+    private String uuid;
 }

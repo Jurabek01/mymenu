@@ -1,5 +1,8 @@
-package mimsoft.io.lemenu.client;
+package mimsoft.io.lemenu.client.service;
 
+import mimsoft.io.lemenu.client.Client;
+import mimsoft.io.lemenu.client.ClientRepository;
+import mimsoft.io.lemenu.client.service.ClientService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

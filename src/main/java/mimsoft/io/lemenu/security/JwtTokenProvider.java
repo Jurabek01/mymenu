@@ -6,8 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mimsoft.io.lemenu.client.Client;
-import mimsoft.io.lemenu.client.ClientService;
+import mimsoft.io.lemenu.client.service.ClientService;
 import mimsoft.io.lemenu.client.auth.JwtResponse;
 import mimsoft.io.lemenu.security.props.JwtProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
@@ -35,6 +37,18 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
+    }
+
+    public String createVerifyToken(Long deviceId, String sessionUuid) {
+        Claims claims = Jwts.claims().setSubject(sessionUuid);
+        claims.put("id", deviceId);
+        Instant validity = Instant.now()
+                .plus(jwtProperties.getAccess(), ChronoUnit.MINUTES);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(Date.from(validity))
+                .signWith(key)
+                .compact();
     }
 
     public String createAccessToken(Long clientId, String phone) {

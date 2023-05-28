@@ -23,6 +23,7 @@ public class Device {
     private Long id;
     private String firebaseToken;
     private String phone;
+    private String uuid;
 
     @Column(name = "created", updatable = false)
     private LocalDateTime created;

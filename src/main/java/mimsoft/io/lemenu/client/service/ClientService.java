@@ -1,4 +1,6 @@
-package mimsoft.io.lemenu.client;
+package mimsoft.io.lemenu.client.service;
+
+import mimsoft.io.lemenu.client.Client;
 
 import java.util.List;
 

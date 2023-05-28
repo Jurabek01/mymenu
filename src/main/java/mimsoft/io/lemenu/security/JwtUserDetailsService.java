@@ -2,7 +2,7 @@ package mimsoft.io.lemenu.security;
 
 import lombok.RequiredArgsConstructor;
 import mimsoft.io.lemenu.client.Client;
-import mimsoft.io.lemenu.client.ClientService;
+import mimsoft.io.lemenu.client.service.ClientService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

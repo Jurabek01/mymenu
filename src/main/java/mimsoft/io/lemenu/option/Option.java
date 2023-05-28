@@ -34,7 +34,7 @@ public class Option {
     private String descriptionRu;
     private String descriptionEng;
     private String image;
-    private BigDecimal price;
+    private Double price;
     @Builder.Default
     private Boolean deleted = false;
 

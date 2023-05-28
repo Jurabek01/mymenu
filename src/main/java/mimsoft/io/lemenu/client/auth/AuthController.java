@@ -1,12 +1,15 @@
 package mimsoft.io.lemenu.client.auth;
 
 import lombok.RequiredArgsConstructor;
-import mimsoft.io.lemenu.client.ClientMapper;
-import mimsoft.io.lemenu.client.ClientService;
+import mimsoft.io.lemenu.client.mapper.ClientMapper;
+import mimsoft.io.lemenu.client.service.ClientService;
+import mimsoft.io.lemenu.client.auth.service.AuthService;
+import mimsoft.io.lemenu.device.Device;
 import mimsoft.io.lemenu.device.DeviceDto;
-import mimsoft.io.lemenu.device.DeviceMapper;
-import mimsoft.io.lemenu.device.DeviceService;
+import mimsoft.io.lemenu.device.mapper.DeviceMapper;
+import mimsoft.io.lemenu.device.service.DeviceService;
 import mimsoft.io.lemenu.services.SMSService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,16 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final ClientService clientService;
-    private final ClientMapper clientMapper;
-    private final SMSService smsService;
-    private final DeviceService deviceService;
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
     @PostMapping("/send-code")
     public ResponseEntity<?> sendCode(@RequestBody DeviceDto deviceDto) {
-        deviceService.save(deviceMapper.toEntity(deviceDto));
-        smsService.send(deviceDto.getPhone());
+        return new ResponseEntity<>(authService.sendCode(deviceMapper.toEntity(deviceDto)), HttpStatus.OK);
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<?> verifyCode(@RequestBody Long verifyCode) {
 
     }
 }

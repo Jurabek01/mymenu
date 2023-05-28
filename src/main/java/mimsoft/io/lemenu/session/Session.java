@@ -25,6 +25,7 @@ public class Session {
     private Long clientId;
     private String phone;
     private Long verifyCode;
+    private String uuid;
 
     @Column(name = "created", updatable = false)
     private LocalDateTime created;

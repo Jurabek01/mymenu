@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SMSServiceImpl implements SMSService {
     @Override
-    public void send(String phone) {
-
+    public Long send(String phone) {
+        return null;
     }
 }

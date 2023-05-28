@@ -28,3 +28,4 @@ security:
     secret: lamenu
     access: 1
     refresh: 30
+    verify: 3

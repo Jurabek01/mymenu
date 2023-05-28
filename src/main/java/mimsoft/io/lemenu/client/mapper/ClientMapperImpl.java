@@ -1,9 +1,12 @@
-package mimsoft.io.lemenu.client;
+package mimsoft.io.lemenu.client.mapper;
 
+import mimsoft.io.lemenu.client.Client;
+import mimsoft.io.lemenu.client.ClientDto;
+import mimsoft.io.lemenu.client.mapper.ClientMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientMapperImpl implements ClientMapper{
+public class ClientMapperImpl implements ClientMapper {
     @Override
     public Client toEntity(ClientDto clientDto) {
         return Client.builder()

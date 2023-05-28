@@ -3,7 +3,6 @@ package mimsoft.io.lemenu.config;
 import lombok.RequiredArgsConstructor;
 import mimsoft.io.lemenu.security.JwtTokenFilter;
 import mimsoft.io.lemenu.security.JwtTokenProvider;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +52,7 @@ public class ApplicationConfig {
                 }))
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/auth/send-code").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .anonymous().disable()

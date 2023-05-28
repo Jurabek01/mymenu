@@ -1,6 +1,9 @@
-package mimsoft.io.lemenu.device;
+package mimsoft.io.lemenu.device.service;
 
 import lombok.RequiredArgsConstructor;
+import mimsoft.io.lemenu.device.Device;
+import mimsoft.io.lemenu.device.DeviceRepository;
+import mimsoft.io.lemenu.device.service.DeviceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +28,8 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public boolean save(Device device) {
-        return false;
+    public Device save(Device device) {
+        return deviceRepository.save(device);
     }
 
     @Override

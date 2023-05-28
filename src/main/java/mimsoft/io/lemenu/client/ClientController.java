@@ -1,5 +1,7 @@
 package mimsoft.io.lemenu.client;
 
+import mimsoft.io.lemenu.client.mapper.ClientMapper;
+import mimsoft.io.lemenu.client.service.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

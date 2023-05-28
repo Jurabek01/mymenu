@@ -4,8 +4,8 @@ import mimsoft.io.lemenu.client.Client;
 
 public class JwtEntityFactory {
 
-    public static JwtEntity create(Client client) {
-        return new JwtEntity(
+    public static LaEntity create(Client client) {
+        return new LaEntity(
                 client.getId(),
                 client.getPhone(),
                 client.getFirstName(),
